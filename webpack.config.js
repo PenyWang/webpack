@@ -1,18 +1,19 @@
 var HtmlWebpackPlugin = require("html-webpack-plugin");
-var ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
-// var package = require("./package.json");
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var { CleanWebpackPlugin } = require('clean-webpack-plugin');
+var package = require("./package.json");
 
 console.log(__dirname);
 
 module.exports = {
-
+ 
   entry: {
     index: "./src/index.js", // 入口文件
-    // main: "./src/main.js"  // 多入口写法
+    main: "./src/main.js"  // 多入口写法
   },
   output: {
     path: __dirname + "/dist",
-    filename: '[name].bundle.js'
+    filename: '[name].[hash:5].bundle.js'
   },
   module: {
     rules: [
@@ -21,16 +22,13 @@ module.exports = {
         use: ["babel-loader"], //将es6语法，转义成es6， 不包含es6 api
         exclude: /(node_modules)/
       },
-      // {
-      //   test: /\.(css|less)$/, 
-      //   use: ["style-loader", "css-loader", "postcss-loader", "less-loader"]
-      // },
       {
+        test: /\.(less)$/, 
+        use: ["style-loader", "css-loader", "postcss-loader", "less-loader"]
+      },
+      { // 暂未找到该插件的使用场景，直接用style-loader以style的形式插入html即可。该插件作用，将css文件提取出来，以link方式插入html。
         test: /\.css/,
-        use: ExtractTextWebpackPlugin.extract({
-          fallback: {loader: 'style-loader'},
-          use: {loader: 'css-loader'}
-        })
+        use: [MiniCssExtractPlugin.loader, 'css-loader', "postcss-loader" ]
       },
       {
         test: /\.(png|jpe?g|gif)$/,
@@ -48,20 +46,20 @@ module.exports = {
       filename: "index.html",
       chunks: ['index'],
       inject: 'body', // 如果为false，则不引入chunks指定的入口文件。如果为body或head则放置对应的模块尾部。
-      
-      // minify: { 
-      //   removeAttributeQuotes: true, //删除引号
-      //   collapseWhitespace: true // 压缩成一行  删除空格
-      // }
+      minify: { 
+        removeAttributeQuotes: true, //删除引号
+        collapseWhitespace: true // 压缩成一行  删除空格
+      }
     }),
-    new ExtractTextWebpackPlugin({
-      filename: '[name].[ext]'
-    })
-  //   new HtmlWebpackPlugin({
-  //     title: package.name,
-  //     template: "main.html",
-  //     filename: "main.html",
-  //     chunks: ['main']
-  //   }),
+    new HtmlWebpackPlugin({
+      title: package.name,
+      template: "main.html",
+      filename: "main.html",
+      chunks: ['main']
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name]-[hash:4].css'
+    }),
+    new CleanWebpackPlugin()
   ]
 }
