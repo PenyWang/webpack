@@ -19,10 +19,10 @@ module.exports = {
         test: /\.js$/,
         use: [{
           loader: 'babel-loader',
-          options: {
+          options: { //此配置可单独放置到.babelrc文件中
             "presets": [
               [
-                "@babel/preset-env",
+                "@babel/preset-env", //解析es6 语法
                 {
                   "targets": {
                     "browsers": ["last 2 versions"] // 针对每个浏览器最后的两个版本进行转义
@@ -30,7 +30,7 @@ module.exports = {
                 }
               ]
             ],
-            "plugins": [
+            "plugins": [ //转义es6及以上的api 按需加载模块 比ployfill节省空间
               "@babel/transform-runtime"
             ] 
           }
