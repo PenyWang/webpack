@@ -17,7 +17,24 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: ["babel-loader"], //将es6语法，转义成es6， 不包含es6 api
+        use: [{
+          loader: 'babel-loader',
+          options: {
+            "presets": [
+              [
+                "@babel/preset-env",
+                {
+                  "targets": {
+                    "browsers": ["last 2 versions"] // 针对每个浏览器最后的两个版本进行转义
+                  }
+                }
+              ]
+            ],
+            "plugins": [
+              "@babel/transform-runtime"
+            ] 
+          }
+        }], //将es6语法，转义成es6， 不包含es6 api
         exclude: /(node_modules)/
       },
       {
