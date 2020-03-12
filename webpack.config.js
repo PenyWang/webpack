@@ -1,7 +1,8 @@
-var HtmlWebpackPlugin = require("html-webpack-plugin"); // effect：将html按照对应的模板打包到dist目录下
-var MiniCssExtractPlugin = require("mini-css-extract-plugin"); // effect：将css以link方式插入html
-var { CleanWebpackPlugin } = require("clean-webpack-plugin"); // effect：打包时，先清空dist文件夹。Be careful：clean-webpack-plugin 3.0版本需要解构CleanWebpackPlugin
-var package = require("./package.json"); 
+let webpack = require("webpack");
+    HtmlWebpackPlugin = require("html-webpack-plugin"), // effect：将html按照对应的模板打包到dist目录下
+    MiniCssExtractPlugin = require("mini-css-extract-plugin"), // effect：将css以link方式插入html
+    { CleanWebpackPlugin } = require("clean-webpack-plugin"), // effect：打包时，先清空dist文件夹。Be careful：clean-webpack-plugin 3.0版本需要解构CleanWebpackPlugin
+    package = require("./package.json"); 
 
 module.exports = {
  
@@ -47,7 +48,11 @@ module.exports = {
       // },
       {
         test: /\.(png|jpe?g|gif)$/,
-        use: ["url-loader?esModule=false&limit=1024&name=images/[name]-[hash:4].[ext]"] // 如果html要使用img，url-loader里esModule需要设置为false，只有url-loader、file-loader只会ext的写法。
+        use: ["url-loader?esModule=false&limit=1024&name=images/[name]-[hash:4].[ext]"] // 如果html要使用img，url-loader里esModule需要设置为false(否则:html>>img>>src为[object Module] )，只有url-loader、file-loader支持ext的写法(ext代表文件后缀名)。
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        use: ["file-loader?name=style/[name]-[hash:4].[ext]"] // file-loader和url-loader的区别：url-loader可以根据limit转为base64，file-loader不可以。url-loader只能处理图片文件，file-loader都可以处理。
       },
       {
         test: /\.html$/,  
@@ -72,9 +77,16 @@ module.exports = {
       filename: "main.html",
       chunks: ["main"]
     }),
-    new MiniCssExtractPlugin({ 
-      filename: "[name]-[hash:4].css"
-    }),
-    new CleanWebpackPlugin()  // clean-webpack-plugin 3.0 实例化时不需要传入["dist"]参数
-  ]
+    // new MiniCssExtractPlugin({ // effect：将css以link方式插入html  需结合loader一起使用  不推荐使用 非最佳实践
+    //   filename: "[name]-[hash:4].css"  
+    // }),
+    new CleanWebpackPlugin(),  // clean-webpack-plugin 3.0 实例化时不需要传入["dist"]参数
+    new webpack.ProvidePlugin({ // effect: 将模块引用变为全局变量，无需import
+      $: 'jquery',
+      jquery: 'jquery'
+    })
+  ],
+  resolve: {
+    alias: { 'localJQ': './lib/juqery.min.js'}
+  }
 }
