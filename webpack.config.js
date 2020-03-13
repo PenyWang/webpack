@@ -51,7 +51,7 @@ module.exports = {
         use: ["url-loader?esModule=false&limit=1024&name=images/[name]-[hash:4].[ext]"] // 如果html要使用img，url-loader里esModule需要设置为false(否则:html>>img>>src为[object Module] )，只有url-loader、file-loader支持ext的写法(ext代表文件后缀名)。
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        test: /\.(eot|svg|ttf|woff|woff2)$/, // 处理字体文件
         use: ["file-loader?name=style/[name]-[hash:4].[ext]"] // file-loader和url-loader的区别：url-loader可以根据limit转为base64，file-loader不可以。url-loader只能处理图片文件，file-loader都可以处理。
       },
       {
@@ -81,12 +81,12 @@ module.exports = {
     //   filename: "[name]-[hash:4].css"  
     // }),
     new CleanWebpackPlugin(),  // clean-webpack-plugin 3.0 实例化时不需要传入["dist"]参数
-    new webpack.ProvidePlugin({ // effect: 将模块引用变为全局变量，无需import
+    new webpack.ProvidePlugin({ // effect: 将模块引用变为全局变量，无需import, 可以通过index.js中查看效果
       $: 'jquery',
       jquery: 'jquery'
     })
   ],
-  resolve: {
-    alias: { 'localJQ': './lib/juqery.min.js'}
+  resolve: {  
+    alias: { 'b': __dirname + '/src/lib/test'}  // 给模块路径设置别名，可模拟引用第三方包的效果，可在index.js中查看效果
   }
 }
