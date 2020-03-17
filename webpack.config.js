@@ -88,5 +88,18 @@ module.exports = {
   ],
   resolve: {  
     alias: { 'b': __dirname + '/src/lib/test'}  // 给模块路径设置别名，可模拟引用第三方包的效果，可在index.js中查看效果
+  },
+  devServer: {
+    port: 3000, // 本地服务端口号
+    open: true, // 启动后是否自动打开浏览器
+    host: '0.0.0.0', // 服务所在ip，windows下如果无法访问，可在浏览器改用localhost。只有设置了0.0.0.0才可以在其他设备访问通过本机ip进行访问。
+    inline: true, // 当代码由变动时， true：刷新整个页面，false：将页面嵌套至iframe内部。inline默认为true。
+    historyApiFallback: true, // if the url path is error, it will jump to index.html
+    proxy: {
+      '/sug': {
+        target: 'https://suggest.taobao.com/',
+        changeOrigin: true
+      }
+    }
   }
 }

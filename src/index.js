@@ -3,12 +3,15 @@ import './style/index.less';
 import 'bootstrap/dist/css/bootstrap.css';
 import a from 'b';
 
-console.log(a());
+console.log(a());  // test resolve>>alias  omit(省略) reference path
 
-function* test () {  // 通过@babel/plugin-transform-runtime 可以对es6以上的api进行转义，使其兼容ie浏览器
+function* test () {  // test transform-runtime 
   yield $.isArray([]) + 1;
 }
-
 console.log(test().next());
 
-console.log($.isArray([]))
+console.log($.isArray([]))  // test webpack.ProvidePlugin
+
+fetch('/sug?code=utf-8&q=%E8%A2%9C%E5%AD%90&callback=cb').then(_ => {
+  console.log(_)
+})
