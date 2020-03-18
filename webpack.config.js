@@ -84,7 +84,8 @@ module.exports = {
     new webpack.ProvidePlugin({ // effect: 将模块引用变为全局变量，无需import, 可以通过index.js中查看效果
       $: 'jquery',
       jquery: 'jquery'
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin() // if change code, the page will not refresh
   ],
   resolve: {  
     alias: { 'b': __dirname + '/src/lib/test'}  // 给模块路径设置别名，可模拟引用第三方包的效果，可在index.js中查看效果
@@ -92,13 +93,15 @@ module.exports = {
   devServer: {
     port: 3000, // 本地服务端口号
     open: true, // 启动后是否自动打开浏览器
+    hot: true, // if change code, the page will not refresh
     host: '0.0.0.0', // 服务所在ip，windows下如果无法访问，可在浏览器改用localhost。只有设置了0.0.0.0才可以在其他设备访问通过本机ip进行访问。
     inline: true, // 当代码由变动时， true：刷新整个页面，false：将页面嵌套至iframe内部。inline默认为true。
     historyApiFallback: true, // if the url path is error, it will jump to index.html
-    proxy: {
-      '/sug': {
-        target: 'https://suggest.taobao.com/',
-        changeOrigin: true
+    proxy: { // it's a proxy server, proxy can resolve the cros problem during the development
+      '/sug': { // in code you only need use '/sug ' to httpRequest
+        target: 'https://suggest.taobao.com/', // 如果上线后API域名和网站域名为同一域名，适用于proxy，否则打包上线之后，API请求域名为网站域名。
+        changeOrigin: true, 
+        logLevel: 'debug' // by this config, you can see the request origin in devServer console
       }
     }
   }

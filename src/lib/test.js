@@ -1,3 +1,3 @@
 export default function (){
-  return 1
+  return 'test the resolve and alias';
 };
