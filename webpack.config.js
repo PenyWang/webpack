@@ -18,6 +18,11 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
+        use: ['eslint-loader'],
+        exclude: /(node_modules)/
+      },
+      {
+        test: /\.js$/,
         use: [{
           loader: 'babel-loader',
           options: { //此配置可单独放置到.babelrc文件中
@@ -55,9 +60,9 @@ module.exports = {
         use: ["file-loader?name=style/[name]-[hash:4].[ext]"] // file-loader和url-loader的区别：url-loader可以根据limit转为base64，file-loader不可以。url-loader只能处理图片文件，file-loader都可以处理。
       },
       {
-        test: /\.html$/,  
+        test: /index\.html$/,  
         use: ["html-loader?attributes=img:src&title=123"] // 可以处理html中引用的图片，生成正确的路径。 使用html loader 会使得HtmlWebpackPlugin的title等一些解析失效
-      },
+      }
     ]
   },
   plugins: [
@@ -94,9 +99,10 @@ module.exports = {
     port: 3000, // 本地服务端口号
     open: true, // 启动后是否自动打开浏览器
     hot: true, // if change code, the page will not refresh
-    host: '0.0.0.0', // 服务所在ip，windows下如果无法访问，可在浏览器改用localhost。只有设置了0.0.0.0才可以在其他设备访问通过本机ip进行访问。
     inline: true, // 当代码由变动时， true：刷新整个页面，false：将页面嵌套至iframe内部。inline默认为true。
     historyApiFallback: true, // if the url path is error, it will jump to index.html
+    host: '0.0.0.0', // 服务所在ip，windows下如果无法访问，可在浏览器改用localhost。只有设置了0.0.0.0才可以在其他设备访问通过本机ip进行访问。
+    openPage: 'main.html', // browser automatically opens the specified(指定的) page, default page is index.html
     proxy: { // it's a proxy server, proxy can resolve the cros problem during the development
       '/sug': { // in code you only need use '/sug ' to httpRequest
         target: 'https://suggest.taobao.com/', // 如果上线后API域名和网站域名为同一域名，适用于proxy，否则打包上线之后，API请求域名为网站域名。

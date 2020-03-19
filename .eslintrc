@@ -1,0 +1,8 @@
+{
+  "root": true, // check all files in the root directory
+  "extends": "standard",
+  "plugins": [ "node", "html", "import", "promise" ],
+  "env": {
+    "browser": true
+  }
+}
