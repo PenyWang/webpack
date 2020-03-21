@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import a from 'b';
 
 if(module.hot){
-  module.hot.accept();
+  module.hot.accept(); 
 }
 console.log('test wepack hot module, if change code, the page will not refresh');
 
