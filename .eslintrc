@@ -1,8 +1,11 @@
 {
   "root": true, // check all files in the root directory
   "extends": "standard",
-  "plugins": [ "node", "html", "import", "promise" ],
+  "plugins": [ "node", "html", "promise" ],
   "env": {
     "browser": true
+  },
+  "rules": {
+    "semi": ["error", "always"] // ignore the semicolon(语法) syntax check
   }
 }

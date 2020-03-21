@@ -18,11 +18,6 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: ['eslint-loader'],
-        exclude: /(node_modules)/
-      },
-      {
-        test: /\.js$/,
         use: [{
           loader: 'babel-loader',
           options: { //此配置可单独放置到.babelrc文件中
@@ -36,8 +31,8 @@ module.exports = {
                 }
               ]
             ],
-            "plugins": [ //转义es6及以上的api 按需加载模块 比ployfill节省空间
-              "@babel/transform-runtime"
+            "plugins": [ //转义es6及以上的api 按需加载模块 比ployfill节省空间 
+              "@babel/transform-runtime" // 垫片
             ] 
           }
         }], //将es6语法，转义成es6， 不包含es6 api
@@ -63,6 +58,11 @@ module.exports = {
         test: /index\.html$/,  
         use: ["html-loader?attributes=img:src&title=123"] // 可以处理html中引用的图片，生成正确的路径。 使用html loader 会使得HtmlWebpackPlugin的title等一些解析失效
       }
+      // { // must after the babel-loader, the syntax will be incorrect by babel-loader
+      //   test: /\.js$/,
+      //   use: ['eslint-loader'], // check syntax, too strict，not recommended(推荐)
+      //   exclude: /(node_modules)/
+      // }
     ]
   },
   plugins: [
