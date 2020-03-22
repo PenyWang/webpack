@@ -2,9 +2,15 @@ let webpack = require("webpack");
     HtmlWebpackPlugin = require("html-webpack-plugin"), // effect：将html按照对应的模板打包到dist目录下
     MiniCssExtractPlugin = require("mini-css-extract-plugin"), // effect：将css以link方式插入html
     { CleanWebpackPlugin } = require("clean-webpack-plugin"), // effect：打包时，先清空dist文件夹。Be careful：clean-webpack-plugin 3.0版本需要解构CleanWebpackPlugin
+    UglifyjsWebpackPlugin = require("uglifyjs-webpack-plugin"), // effect: compress code and remove useless code
+    OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plugin"), // effect: compress css code
+    PurifycssWebpack = require("purifycss-webpack"), // effect: remove useless css code
+    GlobAll = require("glob-all"), // effect: Specify(指定) which files purifycss works on
     package = require("./package.json"); 
-
+    
 module.exports = {
+
+  mode: 'production',
  
   entry: {
     index: "./src/index.js", // 入口文件
@@ -42,9 +48,9 @@ module.exports = {
         test: /\.(css|less)$/, 
         use: ["style-loader", "css-loader", "postcss-loader", "less-loader"] // 多个loader从右到左解析，less-loader解析less文件源码，postcss解析css3语法及浏览器兼容及压缩css，css-loader解析css语句，style-loader将css以style形式插入html
       },
-      // { // 不推荐使用 不属于最佳实践
-      //   test: /\.css/,
-      //   use: [ MiniCssExtractPlugin.loader, "css-loader", "postcss-loader" ] // 该插件作用，将css文件提取出来，以link方式插入html。暂未发现该插件的实战场景，因为用style-loader即可以style的形式插入html即可。
+      // { 
+      //   test: /\.(css|less)/, // need provide MiniCssExtractPlugin in plugins
+      //   use: [ MiniCssExtractPlugin.loader, "css-loader", "postcss-loader", "less-loader" ] // 该插件作用，将css文件提取出来，以link方式插入html。暂未发现该插件的实战场景，因为用style-loader即可以style的形式插入html即可。
       // },
       {
         test: /\.(png|jpe?g|gif)$/,
@@ -82,15 +88,30 @@ module.exports = {
       filename: "main.html",
       chunks: ["main"]
     }),
-    // new MiniCssExtractPlugin({ // effect：将css以link方式插入html  需结合loader一起使用  不推荐使用 非最佳实践
-    //   filename: "[name]-[hash:4].css"  
-    // }),
-    new CleanWebpackPlugin(),  // clean-webpack-plugin 3.0 实例化时不需要传入["dist"]参数
     new webpack.ProvidePlugin({ // effect: 将模块引用变为全局变量，无需import, 可以通过index.js中查看效果
       $: 'jquery',
       jquery: 'jquery'
     }),
-    new webpack.HotModuleReplacementPlugin() // if change code, the page will not refresh
+    new CleanWebpackPlugin(),  // clean-webpack-plugin 3.0 实例化时不需要传入["dist"]参数
+    new webpack.HotModuleReplacementPlugin(), // if change code, the page will not refresh
+    // new PurifycssWebpack({
+    //   paths: [] // 经测试 GlobAll.sync 未起作用，默认会将html中未引用到的样式选择器全部去除
+    //   // paths: GlobAll.sync([
+    //   //   __dirname + '/src/index.js', // sepcify which files purifycss works on
+    //   //   // you can add other filepath in here
+    //   // ])
+    // }),
+    // new UglifyjsWebpackPlugin({ // mode=production is ok, no need for it
+    //   uglifyOptions: {
+    //     ecma: 5
+    //   }
+    // }),
+    // new MiniCssExtractPlugin({ // effect：将js中所有引用的css打包到一个css文件中，以link方式插入html。需结合loader一起使用。 不推荐使用 会造成额外http请求。但如果要去除无用css代码，必须适用该插件。
+    //   filename: "[name]-[hash:4].css"  
+    // }),
+    // new OptimizeCssAssetsWebpackPlugin({ // effect compress css, need to MiniCssExtractPlugin together
+    //   cssProcessor: require('cssnano') // postcss is ok, no need for it. but if use MiniCssExtractPlugin must use it.
+    // }),
   ],
   resolve: {  
     alias: { 'b': __dirname + '/src/lib/test'}  // 给模块路径设置别名，可模拟引用第三方包的效果，可在index.js中查看效果

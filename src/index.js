@@ -1,6 +1,6 @@
 import './style/index.css';
 import './style/index.less';
-import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/css/bootstrap.css';
 import a from 'b';
 
 if (module.hot) {
