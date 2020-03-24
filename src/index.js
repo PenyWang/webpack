@@ -1,14 +1,14 @@
 import './style/index.css';
 import './style/index.less';
 // import 'bootstrap/dist/css/bootstrap.css';
-import a from 'b';
+import utils from 'utils';
 
 if (module.hot) {
   module.hot.accept();
 }
 console.log('test wepack hot module, if change code, the page will not refresh');
 
-console.log(a()); // test resolve>>alias  omit(省略) reference path
+console.log(utils()); // test resolve>>alias  omit(省略) reference path
 console.log($.isArray([])); // test webpack.ProvidePlugin
 
 function * test () { // test transform-runtime

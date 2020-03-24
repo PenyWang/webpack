@@ -10,7 +10,7 @@ let webpack = require("webpack");
     
 module.exports = {
 
-  mode: 'production',
+  mode: 'none',
  
   entry: {
     index: "./src/index.js", // 入口文件
@@ -75,7 +75,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "index.html", //模板文件
       filename: "index.html", //打包后文件名称
-      chunks: ["index"], // 对应entry的attributeName，表示在html中引入对应的入口文件
+      chunks: ["index", "common"], // 对应entry的attributeName，表示在html中引入对应的入口文件
       inject: "body", // 如果为false，则不引入任何入口文件。如果为body或head则放置对应的模块尾部。
       minify: { 
         removeAttributeQuotes: true, //删除引号
@@ -86,7 +86,7 @@ module.exports = {
       title: package.name,
       template: "main.html",
       filename: "main.html",
-      chunks: ["main"]
+      chunks: ["main", "common"]
     }),
     new webpack.ProvidePlugin({ // effect: 将模块引用变为全局变量，无需import, 可以通过index.js中查看效果
       $: 'jquery',
@@ -114,7 +114,7 @@ module.exports = {
     // }),
   ],
   resolve: {  
-    alias: { 'b': __dirname + '/src/lib/test'}  // 给模块路径设置别名，可模拟引用第三方包的效果，可在index.js中查看效果
+    alias: { 'utils': __dirname + '/src/lib/myUtils'}  // 给模块路径设置别名，可模拟引用第三方包的效果，可在index.js中查看效果
   },
   devServer: {
     port: 3000, // 本地服务端口号
@@ -131,5 +131,23 @@ module.exports = {
         logLevel: 'debug' // by this config, you can see the request origin in devServer console
       }
     }
-  }
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        common: { // effect: 将多入口文件，各自引用的代码合并一个文件中。否则各自引用的代码会分别打包到自己的outputfile中。
+          name: 'common', // common file's name。需要在HtmlWebpackPlugin配置相应的chunks，否则无法被打包后的html引入
+          chunks: 'all', // 将所有的代码合并到同一文件中
+          minSize: 1,
+          priority: 0,
+        },
+        vendor: {
+          name: 'vendor',
+          test: /[\\/]node_module[\\/]/,
+          chunks: 'all',
+          priority: 10,
+        }
+      }
+    }
+  },
 }

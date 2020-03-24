@@ -1,3 +1,3 @@
 import './style/index.less';
-const b = 'a';
-console.log(b);
+import utils from './lib/arrayUtils';
+console.log(utils());  // test optimization extract common code
