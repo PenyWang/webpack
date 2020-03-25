@@ -19,7 +19,8 @@ module.exports = {
   },
   output: {
     path: __dirname + "/dist",
-    filename: "[name].[hash:5].bundle.js"
+    filename: "[name].[hash:5].bundle.js",
+    chunkFilename: "[name].chunk.js"
   },
   module: {
     rules: [
@@ -95,7 +96,7 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),  // clean-webpack-plugin 3.0 实例化时不需要传入["dist"]参数
     new webpack.HotModuleReplacementPlugin(), // if change code, the page will not refresh
-    new BundleAnalyzerPlugin(), // uisualization(可视化) 插件，查看打包后chunks的依赖关系
+    // new BundleAnalyzerPlugin(), // uisualization(可视化) 插件，查看打包后chunks的依赖关系
     // new PurifycssWebpack({
     //   paths: [] // 经测试 GlobAll.sync 未起作用，默认会将html中未引用到的样式选择器全部去除
     //   // paths: GlobAll.sync([
@@ -134,22 +135,22 @@ module.exports = {
       }
     }
   },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        common: { // effect: 将多入口文件，各自引用的代码合并一个文件中。否则各自引用的代码会分别打包到自己的outputfile中。
-          name: 'common', // common file's name。需要在HtmlWebpackPlugin配置相应的chunks，否则无法被打包后的html引入
-          chunks: 'all', // 将所有的代码合并到同一文件中
-          minSize: 1,
-          priority: 0,
-        },
-        vendor: { // effect: 将引用的第三方包统一打包到vendor.[hash:5].bundle.js中
-          name: 'vendor', // vendor file's name。需要在HtmlWebpackPlugin配置相应的chunks，否则无法被打包后的html引入
-          test: /(node_modules)/,
-          chunks: 'all',
-          priority: 10,
-        }
-      }
-    }
-  },
+  // optimization: {
+  //   splitChunks: {
+  //     cacheGroups: {
+  //       common: { // effect: 将多入口文件，各自引用的代码合并一个文件中。否则各自引用的代码会分别打包到自己的outputfile中。
+  //         name: 'common', // common file's name。需要在HtmlWebpackPlugin配置相应的chunks，否则无法被打包后的html引入
+  //         chunks: 'all', // 将所有的代码合并到同一文件中
+  //         minSize: 1,
+  //         priority: 0,
+  //       },
+  //       vendor: { // effect: 将引用的第三方包统一打包到vendor.[hash:5].bundle.js中
+  //         name: 'vendor', // vendor file's name。需要在HtmlWebpackPlugin配置相应的chunks，否则无法被打包后的html引入
+  //         test: /(node_modules)/,
+  //         chunks: 'all',
+  //         priority: 10, // priority more high, it will run first
+  //       }
+  //     }
+  //   }
+  // },
 }
