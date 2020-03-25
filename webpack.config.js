@@ -11,7 +11,7 @@ let webpack = require("webpack");
     
 module.exports = {
 
-  mode: 'none',
+  mode: 'production',
  
   entry: {
     index: "./src/index.js", // 入口文件
@@ -76,7 +76,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "index.html", //模板文件
       filename: "index.html", //打包后文件名称
-      chunks: ["index", "common"], // 对应entry的attributeName，表示在html中引入对应的入口文件
+      chunks: ["index", "common", "vendor"], // 对应entry的attributeName，表示在html中引入对应的入口文件
       inject: "body", // 如果为false，则不引入任何入口文件。如果为body或head则放置对应的模块尾部。
       minify: { 
         removeAttributeQuotes: true, //删除引号
@@ -143,9 +143,9 @@ module.exports = {
           minSize: 1,
           priority: 0,
         },
-        vendor: {
-          name: 'vendor',
-          test: /[\\/]node_module[\\/]/,
+        vendor: { // effect: 将引用的第三方包统一打包到vendor.[hash:5].bundle.js中
+          name: 'vendor', // vendor file's name。需要在HtmlWebpackPlugin配置相应的chunks，否则无法被打包后的html引入
+          test: /(node_modules)/,
           chunks: 'all',
           priority: 10,
         }
