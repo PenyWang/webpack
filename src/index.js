@@ -1,9 +1,9 @@
 import(/* webpackChunkName: 'subPageA' */'./subPage/subPageA.js').then(function(subPageA){
-  console.log(subPageA); 
+  console.log('test split code for a single chunk', subPageA); 
 })  // 此方法可以将subPageA.js 单独打包成一个文件 不能和optimization-splitChunks-cacheGroups-common混用
 import('./subPage/subPageB.js').then(function(subPageB){
-  console.log(subPageB);
-}) // 无需在html中单独引入拆分后的包，此步骤会自动完成
+  console.log('test split code for a single chunk', subPageB);
+}) // 无需在html中单独引入拆分后的包，此步骤会自动完成 如果通过devServer启动，引用文件的代码不会执行。但是手动打包后可以执行。
 // import(/* webpackChunkName: 'jQuery' */'jquery').then(function($) { // if configure the webpack.ProvidePlugin, it will be useless
 //   console.log($);  
 // });  // test split thirdparty package for a single chunk
@@ -27,14 +27,14 @@ if (module.hot) {
 console.log('test wepack hot module, if change code, the page will not refresh');
 
 console.log(utils()); // test resolve>>alias  omit(省略) reference path
-console.log($.isArray([])); // test webpack.ProvidePlugin
+console.log('test webpack.ProvidePlugin',$.isArray([])); // test webpack.ProvidePlugin
 
 function * test () { // test transform-runtime
   yield $.isArray([]) + 1;
 }
-console.log(test().next());
+console.log('test transform-runtime', test().next());
 
-fetch('/sug?code=utf-8&q=鞋') // test devServer proxy
+fetch('/sug?code=utf-8&q=鞋') // test devServer proxy，此方式不适用手动打包后使用
   .then(response => {
     if (response.status === 200) {
       return response.json();
