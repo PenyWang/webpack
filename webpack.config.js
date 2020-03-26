@@ -96,7 +96,7 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),  // clean-webpack-plugin 3.0 实例化时不需要传入["dist"]参数
     new webpack.HotModuleReplacementPlugin(), // if change code, the page will not refresh
-    // new BundleAnalyzerPlugin(), // uisualization(可视化) 插件，查看打包后chunks的依赖关系
+    new BundleAnalyzerPlugin(), // uisualization(可视化) 插件，查看打包后chunks的依赖关系
     // new PurifycssWebpack({
     //   paths: [] // 经测试 GlobAll.sync 未起作用，默认会将html中未引用到的样式选择器全部去除
     //   // paths: GlobAll.sync([
